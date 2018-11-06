@@ -8,6 +8,8 @@ using System.IO;
 using Newtonsoft.Json;
 using System.Threading;
 using UnityEngine.UI;
+using System.Collections.Generic;
+using UnityEngine.Networking;
 
 public class ButtonWindow : MonoBehaviour {
     public GameObject playButton, header;
@@ -82,12 +84,22 @@ public class ButtonWindow : MonoBehaviour {
             else header.GetComponent<Animator>().SetTrigger("Out");
         }TODO*/
         text.GetComponent<Text>().text+=PlayerPrefs.GetInt("bestscore");
-        new Thread(() => 
-        {
-            Thread.CurrentThread.IsBackground = true; 
-            MainScript.List = JsonConvert.DeserializeObject<string[][]>(GET("https://ninja-server.herokuapp.com/api/v1/shuffle"));
-            //Debug.Log("LIST OF ANIME IS READY");
-            ready = true;
-        }).Start();
+        StartCoroutine(GetText());
+    }
+    IEnumerator GetText() {
+        Debug.Log("Started");
+        UnityWebRequest www = UnityWebRequest.Get("http://207.154.226.130/api/v1/get_hundred");
+        yield return www.Send();
+ 
+        if(www.isError) {
+            Debug.Log(www.error);
+        }
+        else {
+            var it = JsonConvert.DeserializeObject<ArrayList[][]>(www.downloadHandler.text);
+            var prom = JsonConvert.DeserializeObject<ArrayList>(it[0][0][1].ToString());
+            var info = JsonConvert.DeserializeObject<Dictionary<string, string> >(prom[0].ToString()); // it[variant][round][1] -> json file
+            Debug.Log(info["title_ru"]); // title_ru, title_orig, poster_link, song_link
+            ready=true;
+        }
     }
 }
