@@ -4,7 +4,7 @@ using UnityEngine;
 
 public static class MainScript {
     private static int round=0, score=0;
-    private static string[][] list;
+    private static ArrayList[][] list;
     private static bool gameStart=false;
     private static bool startVid=false;
     private static float progress=0;
@@ -22,7 +22,7 @@ public static class MainScript {
         }
     }
 
-    public static string[][] List {
+    public static ArrayList[][] List {
         get {
             return list;
         }

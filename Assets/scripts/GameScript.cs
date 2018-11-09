@@ -3,11 +3,13 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using System.Linq;
+using System.Collections.Generic;
+using Newtonsoft.Json;
 
 public class GameScript : MonoBehaviour {    
     public GameObject btns; // Buttons as gameobjects. to take animation and other components
     public Image timer; // timer at top bar
-    private float waitTime = 30.0f; // amount of time
+    private float waitTime = 20.0f; // amount of time
     
     private bool started = false; // is game started?
     private bool fill = false; // when fill true, timer bar filling in.
@@ -47,23 +49,31 @@ public class GameScript : MonoBehaviour {
         if (!btnCorrect[x]) inCorrect();
         else                Correct();
     }
-
-    // NOTE: var goodOne = JsonConvert.DeserializeObject<Dictionary<string, string>>(GET(url)); 
+    
     private void setBtnText() { // Текст берем с сервака
         System.Random r = new System.Random();
         var numbers = Enumerable.Range(0, 4).OrderBy(i => r.Next()).ToList();
 
-        buttons[numbers[0]].GetComponentInChildren<Text>().text = MainScript.List[1][MainScript.Round];
-        buttons[numbers[1]].GetComponentInChildren<Text>().text = MainScript.List[2][MainScript.Round];
-        buttons[numbers[2]].GetComponentInChildren<Text>().text = MainScript.List[3][MainScript.Round];
-        buttons[numbers[3]].GetComponentInChildren<Text>().text = MainScript.List[0][MainScript.Round];
-        btnCorrect[numbers[3]] = true;
-        btnCorrect[numbers[0]]=btnCorrect[numbers[1]]=btnCorrect[numbers[2]]=false;
-        
-        /*buttons[0].onClick.AddListener(delegate { TaskOnChoose(0); } );
-        buttons[1].onClick.AddListener(delegate { TaskOnChoose(1); } );
-        buttons[2].onClick.AddListener(delegate { TaskOnChoose(2); } );
-        buttons[3].onClick.AddListener(delegate { TaskOnChoose(3); } );*/
+        // Getting current variant's information
+        var fi = JsonConvert.DeserializeObject<ArrayList>(MainScript.List[0][MainScript.Round][1].ToString());
+        var first = JsonConvert.DeserializeObject<Dictionary<string, string> >(fi[0].ToString()); 
+
+        var se = JsonConvert.DeserializeObject<ArrayList>(MainScript.List[1][MainScript.Round][1].ToString());
+        var second = JsonConvert.DeserializeObject<Dictionary<string, string> >(se[0].ToString());
+
+        var thi = JsonConvert.DeserializeObject<ArrayList>(MainScript.List[2][MainScript.Round][1].ToString());
+        var third = JsonConvert.DeserializeObject<Dictionary<string, string> >(thi[0].ToString());
+
+        var fou = JsonConvert.DeserializeObject<ArrayList>(MainScript.List[3][MainScript.Round][1].ToString());
+        var forth = JsonConvert.DeserializeObject<Dictionary<string, string> >(fou[0].ToString());
+
+        buttons[numbers[0]].GetComponentInChildren<Text>().text = first["title_ru"];
+        buttons[numbers[1]].GetComponentInChildren<Text>().text = second["title_ru"];
+        buttons[numbers[2]].GetComponentInChildren<Text>().text = third["title_ru"];
+        buttons[numbers[3]].GetComponentInChildren<Text>().text = forth["title_ru"];
+
+        btnCorrect[numbers[0]] = true;
+        btnCorrect[numbers[3]]=btnCorrect[numbers[1]]=btnCorrect[numbers[2]]=false;
     }
 
     private void buttonsReady() {
@@ -80,7 +90,7 @@ public class GameScript : MonoBehaviour {
     }
 
     private void Update() {
-        if (timer.fillAmount == 1 &&  MainScript.GameStart) {
+        if (timer.fillAmount == 1 && MainScript.GameStart) {
             fill = false;
             started = true;
         }
