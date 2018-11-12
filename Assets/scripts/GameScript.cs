@@ -17,7 +17,7 @@ public class GameScript : MonoBehaviour {
     private bool[] btnCorrect = new bool[4]; // correctness of each button
     private Button[] buttons; // Buttons
 
-    public Image loading;
+    public RawImage blur;
 
     private void inCorrect() {
         //print ("wrong ans");
@@ -102,12 +102,6 @@ public class GameScript : MonoBehaviour {
         }
         if (started && timer.fillAmount == 0) {
             outOfTime();
-        }
-        if (!MainScript.Done) {
-            loading.fillAmount = MainScript.CurSize / MainScript.ContentLength;
-        }
-        else if (loading.fillAmount>0) {
-            loading.enabled = false;
         }
         if (Input.GetKeyDown(KeyCode.Escape)) { 
             MainScript.StartVid = true;
