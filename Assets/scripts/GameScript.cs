@@ -49,7 +49,7 @@ public class GameScript : MonoBehaviour {
         if (!btnCorrect[x]) inCorrect();
         else                Correct();
     }
-    
+
     private void setBtnText() { // Текст берем с сервака
         System.Random r = new System.Random();
         var numbers = Enumerable.Range(0, 4).OrderBy(i => r.Next()).ToList();

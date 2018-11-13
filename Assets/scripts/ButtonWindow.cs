@@ -15,6 +15,8 @@ public class ButtonWindow : MonoBehaviour {
     public GameObject playButton, header;
     public GameObject text, back;
 
+    public AudioSource btnClick;
+
     private bool clicked = false;
     private bool ready = false;
 
@@ -25,6 +27,7 @@ public class ButtonWindow : MonoBehaviour {
         if (clicked == true) {
             return;
         }
+        btnClick.Play();
         clicked = true;
         if (!playButton.GetComponent<Animator>().enabled) playButton.GetComponent<Animator>().enabled = true;
         else playButton.GetComponent<Animator>().SetTrigger("In");
